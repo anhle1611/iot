@@ -4,42 +4,33 @@ const io = require("socket.io")();
 const config = require("../../config");
 const eventHandlers = require("./eventHandlers");
 const jwt = require("jsonwebtoken");
-const { User, Room, Mcu, McuSetting, McuLog } = require("../../models");
+const { User, Room, Mcu, McuSetting, McuLog, Role } = require("../../models");
 
 var activeUsers = {};
 var activeMcus = {};
 io.on("connection", async (socket) => {
 
-  const uPromise = User.findOne({
-    where: { socketId: socket.id },
-    include: [
-      {
-        model: Room,
-        as: "room",
-      },
-      {
-        model: Role,
-        as: "role",
+  socket.on("/userConnect", async ({ token }) => {
+    jwt.verify(token, config.jwt.secret, async (err, { user }) => {
+      if (err) return;
+
+      if (user) {
+        const u = await User.update(
+          {
+            socketId: socket.id,
+          },
+          {
+            where: { id: user.id },
+          }
+        );
+
+        user = { ...user, socketId: socket.id}
+
+        activeUsers[socket.id] = user;
+        io.emit("/socketActive", { activeUsers, activeMcus });
       }
-    ],
+    });
   });
-  const mcuPromise = Mcu.findOne({
-    where: { socketId: socket.id },
-    include: {
-      model: Room,
-      as: "room",
-    },
-  });
-
-  const [u, m] = await Promise.all([uPromise, mcuPromise]);
-
-  if (u) {
-    activeUsers[socket.id] = u;
-  } else if (m) {
-    activeMcus[socket.id] = m;
-  }
-
-  io.emit("/socketActive", { activeUsers, activeMcus });
 
   // Khi user emit event userJoinRoom sẽ update socketId cho user và cho user join room
   socket.on("/userJoinRoom", async ({ token, roomId }) => {
@@ -61,6 +52,11 @@ io.on("connection", async (socket) => {
           }
         );
 
+        user = { ...user, socketId: socket.id, roomId: room.id};
+
+        activeUsers[socket.id] = user;
+        io.emit("/socketActive", { activeUsers, activeMcus });
+
         socket.join(room.code);
       }
     });
@@ -70,17 +66,36 @@ io.on("connection", async (socket) => {
   // sau đó gửi event cho admin báo đã có 1 mcu mới connect
   // sau đó gửi event cho admin báo đã có 1 mcu mới connect
   socket.on("/mcuConnect", async ({ code }) => {
-    const mcu = await Mcu.create({
-      code,
+    let mcu = await Mcu.findOne({
+      where: { code },
+      include: {
+        model: Room,
+        as: "room",
+      },
     });
+    if(mcu) {
+      mcu.set({
+        socketId: socket.id
+      })
+      await mcu.save();
+    } else {
+      mcu = await Mcu.create({
+        code,
+        socketId: socket.id
+      });
+    }
 
     socket.broadcast.emit("/mcuConnect", { mcu });
     io.to(socket.id).emit("/mcuConnectSuccess", { mcu });
+
+    activeMcus[socket.id] = mcu;
+    io.emit("/socketActive", { activeUsers, activeMcus });
   });
 
   // Yêu cầu mcu join room
   socket.on("/adminSetMCURoom", async ({ code, roomId }) => {
-    socket.emit("/setMCURoom", { code, roomId });
+    console.log(1111);
+    io.emit("/adminSetMCURoom", { code, roomId });
   });
 
   // MCU join 1 room theo yêu cầu
@@ -154,7 +169,7 @@ io.on("connection", async (socket) => {
       data,
     });
 
-    io.to(mcu.room.code).emit("/configMCUSuccess", { mcuLog });
+    io.to(mcu.room.code).emit("/mcuUpdateState", { mcuLog });
   });
 
   // Ngắt kết rối

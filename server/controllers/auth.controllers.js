@@ -11,6 +11,9 @@ const login = async (req, res) => {
     const hashedPassword = CryptoJS.SHA256(password).toString();
 
     const user = await User.findOne({
+      attributes: {
+        exclude: ["updatedAt", "createdAt", "deletedAt"]
+      },
       where: { username },
       include: [
         {
@@ -23,11 +26,13 @@ const login = async (req, res) => {
         },
       ],
     });
+
     if (!user || hashedPassword !== user.password) {
       return res.status(400).json({ message: "Invalid username or password" });
     }
 
-    delete user.password;
+    user.password = undefined;
+
     const token = jwt.sign({ user }, config.jwt.secret, {
       expiresIn: config.jwt.expires,
     });

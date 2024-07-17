@@ -38,10 +38,7 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: 1
             },
             deletedAt: DataTypes.DATE,
-            roomId: {
-                allowNull: false,
-                type: DataTypes.STRING(255)
-            },
+            roomId: DataTypes.STRING(255),
             socketId: DataTypes.STRING(255)
         },
         {

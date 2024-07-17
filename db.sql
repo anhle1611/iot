@@ -12,7 +12,7 @@
  Target Server Version : 140010 (140010)
  File Encoding         : 65001
 
- Date: 16/07/2024 23:25:53
+ Date: 17/07/2024 14:00:10
 */
 
 
@@ -154,18 +154,21 @@ MAXVALUE 2147483647
 START 1
 CACHE 1
 ),
-  "roomId" int4 NOT NULL,
+  "roomId" int4,
   "createdAt" timestamp(6) NOT NULL DEFAULT now(),
   "updatedAt" timestamp(6) NOT NULL DEFAULT now(),
   "deletedAt" timestamp(6),
   "name" varchar(255) COLLATE "pg_catalog"."default",
-  "status" int4
+  "status" int4,
+  "socketId" varchar(255) COLLATE "pg_catalog"."default",
+  "code" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
 
 -- ----------------------------
 -- Records of Mcus
 -- ----------------------------
+INSERT INTO "public"."Mcus" OVERRIDING SYSTEM VALUE VALUES (1, NULL, '2024-07-17 01:59:39.444', '2024-07-17 02:02:09.706', NULL, NULL, 1, 'g4Zj6eO5STO1EkseAAAB', '1234567890jqka');
 
 -- ----------------------------
 -- Table structure for Roles
@@ -282,18 +285,19 @@ CACHE 1
   "roomId" int4,
   "createdAt" timestamp(6) NOT NULL DEFAULT now(),
   "updatedAt" timestamp(6) NOT NULL DEFAULT now(),
-  "deletedAt" timestamp(6)
+  "deletedAt" timestamp(6),
+  "socketId" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
 
 -- ----------------------------
 -- Records of Users
 -- ----------------------------
-INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (1, 'admin', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'admin', 1, NULL, '2024-07-15 16:53:03.031259', '2024-07-15 16:53:03.031259', NULL);
-INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (3, 'test1111', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', NULL, 1, 1, '2024-07-15 16:56:23.752', '2024-07-15 16:56:23.752', NULL);
-INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (4, 'test2222', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', NULL, 1, 1, '2024-07-15 16:56:39.915', '2024-07-15 16:56:39.915', NULL);
-INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (5, 'test3333', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', NULL, 1, 1, '2024-07-15 16:56:47.642', '2024-07-15 16:56:47.642', NULL);
-INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (2, 'test', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'test', 1, 1, '2024-07-15 16:53:13.312943', '2024-07-15 16:53:13.312943', NULL);
+INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (3, 'test1111', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', NULL, 1, 1, '2024-07-15 16:56:23.752', '2024-07-15 16:56:23.752', NULL, NULL);
+INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (4, 'test2222', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', NULL, 1, 1, '2024-07-15 16:56:39.915', '2024-07-15 16:56:39.915', NULL, NULL);
+INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (5, 'test3333', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', NULL, 1, 1, '2024-07-15 16:56:47.642', '2024-07-15 16:56:47.642', NULL, NULL);
+INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (2, 'test', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'test', 1, 1, '2024-07-15 16:53:13.312943', '2024-07-15 16:53:13.312943', NULL, NULL);
+INSERT INTO "public"."Users" OVERRIDING SYSTEM VALUE VALUES (1, 'admin', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'admin', 1, 1, '2024-07-15 16:53:03.031259', '2024-07-17 01:42:03.414', NULL, '9xnYe_wDHFVyMPuzAAAB');
 
 -- ----------------------------
 -- Alter sequences owned by
@@ -314,7 +318,7 @@ SELECT setval('"public"."McuSettings_id_seq"', 1, false);
 -- ----------------------------
 ALTER SEQUENCE "public"."Mcus_id_seq"
 OWNED BY "public"."Mcus"."id";
-SELECT setval('"public"."Mcus_id_seq"', 1, false);
+SELECT setval('"public"."Mcus_id_seq"', 1, true);
 
 -- ----------------------------
 -- Alter sequences owned by
@@ -367,7 +371,7 @@ ALTER TABLE "public"."McuSettings" ADD CONSTRAINT "Mcus_copy1_pkey" PRIMARY KEY 
 -- ----------------------------
 -- Auto increment value for Mcus
 -- ----------------------------
-SELECT setval('"public"."Mcus_id_seq"', 1, false);
+SELECT setval('"public"."Mcus_id_seq"', 1, true);
 
 -- ----------------------------
 -- Primary Key structure for table Mcus
