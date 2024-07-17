@@ -49,6 +49,17 @@ const listRoom = async (req, res) => {
   }
 };
 
+const listUser = async (req, res) => {
+  try {
+    const users = await User.findAll();
+
+    res.status(200).json({ users });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "System Error!" });
+  }
+};
+
 const getRoom = async (req, res) => {
   try {
     const { id } = req.params;
@@ -68,9 +79,22 @@ const getRoom = async (req, res) => {
   }
 };
 
+const listMcu = async (req, res) => {
+  try {
+    const mcus = await Mcu.findAll();
+
+    res.status(200).json({ mcus });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "System Error!" });
+  }
+};
+
 module.exports = {
   createUser,
   createRoom,
   listRoom,
-  getRoom
+  getRoom,
+  listUser,
+  listMcu
 };

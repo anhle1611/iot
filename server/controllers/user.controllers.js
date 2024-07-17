@@ -1,19 +1,30 @@
-'use strict';
+"use strict";
 
+const { User, Room, Mcu } = require("../models");
 
-exports.getUsers = (req, res) => {
+const myRoom = async (req, res) => {
   try {
-    res.status(200);
-    res.send(JSON.stringify(data));
+    const { id } = req.user;
+    const user = await User.findOne({
+      attributes: { exclude: ["password"] },
+      where: { id },
+      include: {
+        model: Room,
+        as: "room",
+        include: {
+          model: Mcu,
+          as: "mcu",
+        }
+      },
+    });
+
+    res.status(200).json({ user });
   } catch (error) {
-    res.sendStatus(500);
+    console.log(error);
+    return res.status(500).json({ message: "System Error!" });
   }
 };
-exports.postUser = async (req, res) => {
-  try {
-    res.status(201);
-    res.send(JSON.stringify(newUser));
-  } catch (error) {
-    res.sendStatus(500);
-  }
+
+module.exports = {
+  myRoom
 };
