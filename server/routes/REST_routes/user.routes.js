@@ -7,7 +7,7 @@ module.exports = (Router) => {
   const router = Router();
 
   router
-    .use("/admin", authenticateToken)
+    .use("/user", authenticateToken)
     .get("/user/my-room", userController.myRoom);
 
   return router;

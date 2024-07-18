@@ -4,6 +4,7 @@ const http = require('http');
 const app = require('./app.js');
 const io = require('./routes/SOCKET_routes');
 
+
 const hostname = process.env.HOST || 'localhost';
 const port = process.env.PORT || 3000;
 
@@ -37,4 +38,3 @@ bootstrap()
         process.exit();
       });
     });
-
