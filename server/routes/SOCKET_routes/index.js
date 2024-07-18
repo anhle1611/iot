@@ -4,7 +4,7 @@ const io = require("socket.io")();
 const config = require("../../config");
 const eventHandlers = require("./eventHandlers");
 const jwt = require("jsonwebtoken");
-const { User, Room, Mcu, McuSetting, McuLog, Role } = require("../../models");
+const { User, Room, Mcu, McuSetting, McuLog } = require("../../models");
 
 // const ioInit = async (io) => {
   var activeUsers = {};
@@ -223,6 +223,7 @@ const { User, Room, Mcu, McuSetting, McuLog, Role } = require("../../models");
         const mcuSetting = await McuSetting.create({
           mcuId: mcu.id,
           configs,
+          roomId: mcu.room.id
         });
     
         io.to(mcu.room.code).emit("/configMCUSuccess", { mcuSetting });
@@ -250,6 +251,7 @@ const { User, Room, Mcu, McuSetting, McuLog, Role } = require("../../models");
         const mcuLog = await McuLog.create({
           mcuId: mcu.id,
           data,
+          roomId: mcu.room.id
         });
     
         io.to(mcu.room.code).emit("/mcuUpdateState", { mcuLog });

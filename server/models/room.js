@@ -20,6 +20,16 @@ module.exports = (sequelize, DataTypes) => {
                 sourceKey: "id",
                 as: "mcus"
             });
+            this.hasMany(models.McuLog, {
+                foreignKey: "roomId",
+                sourceKey: "id",
+                as: "mcuLogs"
+            });
+            this.hasMany(models.McuSetting, {
+                foreignKey: "roomId",
+                sourceKey: "id",
+                as: "mcuSettings"
+            });
         }
     }
     Room.init(

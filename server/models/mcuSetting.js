@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
                 type: DataTypes.STRING(255)
             },
+            roomId: {
+                allowNull: true,
+                type: DataTypes.STRING(255)
+            },
             configs: {
                 allowNull: true,
                 type: DataTypes.JSON
