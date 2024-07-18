@@ -280,12 +280,13 @@ const { User, Room, Mcu, McuSetting, McuLog } = require("../../models");
         });
       
         const [user, mcu] = await Promise.all([uPromise, mcuPromise]);
-    
+        delete activeUsers[socket.id];
+        delete activeMcus[socket.id];
         if (user) {
           if(user.room) {
             io.to(user.room.code).emit("/socketDisconnect", { type: "user", object: user });
           }
-          delete activeUsers[socket.id]
+          
         } else if (mcu) {
           if(mcu.room) {
             io.to(mcu.room.code).emit("/socketDisconnect", {
@@ -293,9 +294,7 @@ const { User, Room, Mcu, McuSetting, McuLog } = require("../../models");
               object: mcu,
             });
           }
-          delete activeMcus[socket.id]
         }
-    
         io.emit("/socketActive", { activeUsers, activeMcus });
       } catch (error) {
         console.log("disconnect");
