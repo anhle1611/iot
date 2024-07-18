@@ -13,7 +13,7 @@ const myRoom = async (req, res) => {
         as: "room",
         include: {
           model: Mcu,
-          as: "mcu",
+          as: "mcus",
         }
       },
     });
