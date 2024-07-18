@@ -22,8 +22,11 @@ bootstrap()
         cors: {
           origin: "*",
           methods: ["GET", "POST"],
+          transports: ["websocket"],
           credentials: true
-        }
+        },
+        allowEIO3: true,
+        allowEIO4: true
       });
       console.log(`Server listening at http://${hostname}:${server.address().port}`);
     })
