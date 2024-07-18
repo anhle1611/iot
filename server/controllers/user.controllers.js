@@ -19,8 +19,8 @@ const myRoom = async (req, res) => {
           model: Mcu,
           as: "mcus",
           include: {
-            model: McuLog,
-            as: "mcuLogs",
+            model: McuSetting,
+            as: "mcuSettings",
           }
         }
       },
