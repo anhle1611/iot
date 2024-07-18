@@ -282,13 +282,17 @@ const { User, Room, Mcu, McuSetting, McuLog } = require("../../models");
         const [user, mcu] = await Promise.all([uPromise, mcuPromise]);
     
         if (user) {
-          io.to(user.room.code).emit("/socketDisconnect", { type: "user", object: user });
+          if(user.room) {
+            io.to(user.room.code).emit("/socketDisconnect", { type: "user", object: user });
+          }
           delete activeUsers[socket.id]
         } else if (mcu) {
-          io.to(mcu.room.code).emit("/socketDisconnect", {
-            type: "mcu",
-            object: mcu,
-          });
+          if(mcu.room) {
+            io.to(mcu.room.code).emit("/socketDisconnect", {
+              type: "mcu",
+              object: mcu,
+            });
+          }
           delete activeMcus[socket.id]
         }
     
