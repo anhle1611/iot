@@ -1,7 +1,7 @@
 "use strict";
 
 const CryptoJS = require("crypto-js");
-const { User, Room } = require("../models");
+const { User, Room, Mcu } = require("../models");
 const { v4: uuidv4 } = require("uuid");
 
 const createUser = async (req, res) => {
