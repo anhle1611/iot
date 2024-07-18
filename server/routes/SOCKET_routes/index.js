@@ -239,8 +239,7 @@ const { User, Room, Mcu, McuSetting, McuLog } = require("../../models");
       try {
         const mcu = await Mcu.findOne({
           where: {
-            code,
-            configs,
+            code
           },
           include: {
             model: Room,
